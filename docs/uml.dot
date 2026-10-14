@@ -1,0 +1,39 @@
+digraph UML {
+  rankdir=TB; nodesep=0.35; ranksep=0.7; splines=ortho;
+  node [shape=record, fontname="Helvetica", fontsize=10, style=filled, fillcolor="#FFFFFF"];
+  edge [fontname="Helvetica", fontsize=9];
+
+  Client [label="{Main (Client)|+ main(args)}", fillcolor="#E8F1FB"];
+
+  Conv [label="{VideoConversionFacade|- codecFactory : CodecFactory\l- bitrateReader : BitrateReader\l- audioMixer : AudioMixer\l- storage : VideoFileStorage\l|+ convert(fileName, targetFormat) : Path\l+ convert(source, targetFormat, target) : Path\l+ supportedFormats() : Set\<String\>\l}", fillcolor="#FFF2CC"];
+  Info [label="{VideoInfoFacade|- codecFactory, bitrateReader, storage\l|+ describe(fileName) : String\l}", fillcolor="#FFF2CC"];
+  Exc  [label="{ConversionException|\<\<checked\>\>}", fillcolor="#FCE4E4"];
+
+  Factory [label="{CodecFactory|- codecs : Map\<String, Codec\>\l|+ forFormat(format) : Codec\l+ supportedFormats() : Set\<String\>\l}", fillcolor="#E2F0D9"];
+  Reader [label="{BitrateReader||+ readFrames(encoded, codec) : byte[]\l+ writeFrames(raw, codec) : byte[]\l+ bitrateKbps(raw) : int\l}", fillcolor="#E2F0D9"];
+  Mixer [label="{AudioMixer||+ normalize(rawFrames) : byte[]\l}", fillcolor="#E2F0D9"];
+  Storage [label="{VideoFileStorage||+ load(path) : byte[]\l+ save(path, data) : Path\l+ extensionOf(path) : String\l+ baseNameOf(path) : String\l}", fillcolor="#E2F0D9"];
+
+  Codec [label="{\<\<interface\>\>\nCodec||+ format() : String\l+ encode(raw) : byte[]\l+ decode(encoded) : byte[]\l}", fillcolor="#E2F0D9"];
+  Abs [label="{AbstractHeaderCodec|- magic : byte[]\l- key : byte\l|}", fillcolor="#E2F0D9"];
+  Mp4 [label="{Mpeg4Codec}", fillcolor="#E2F0D9"];
+  Ogg [label="{OggCodec}", fillcolor="#E2F0D9"];
+  Webm [label="{WebmCodec}", fillcolor="#E2F0D9"];
+
+  Client -> Conv [label="uses", arrowhead=vee, style=solid];
+  Client -> Info [label="uses", arrowhead=vee];
+  Conv -> Exc [arrowhead=vee, style=dashed, label="throws"];
+  Info -> Exc [arrowhead=vee, style=dashed];
+
+  Conv -> Factory [arrowhead=vee]; Conv -> Reader [arrowhead=vee];
+  Conv -> Mixer [arrowhead=vee]; Conv -> Storage [arrowhead=vee];
+  Info -> Factory [arrowhead=vee]; Info -> Reader [arrowhead=vee]; Info -> Storage [arrowhead=vee];
+
+  Factory -> Codec [arrowhead=vee, label="creates"];
+  Reader -> Codec [arrowhead=vee, style=dashed];
+  Abs -> Codec [arrowhead=empty, style=dashed];
+  Mp4 -> Abs [arrowhead=empty]; Ogg -> Abs [arrowhead=empty]; Webm -> Abs [arrowhead=empty];
+
+  subgraph cluster_sub { label="Complex subsystem (unaware of the facades)"; style=dashed; color="#888888"; fontname="Helvetica"; fontsize=11;
+    Factory; Reader; Mixer; Storage; Codec; Abs; Mp4; Ogg; Webm; }
+}
