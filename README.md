@@ -24,7 +24,8 @@ src/main/java/kz/astanait/videofacade/
 └── subsystem/   CodecFactory, Codec, AbstractHeaderCodec,
                  Mpeg4Codec, OggCodec, WebmCodec,
                  BitrateReader, AudioMixer, VideoFileStorage (+ 2 subsystem exceptions)
-src/test/java/…/FacadeTests.java           – plain-Java tests
+src/test/java/…/                           – JUnit 4 tests (VideoConversionFacadeTest, SubsystemWithoutFacadeTest, VideoTestKit helper)
+pom.xml                                    – Maven build (JUnit 4.13.2, Java 17)
 docs/uml.dot, docs/uml.png                 – UML class diagram
 samples/                                   – input files for the demo
 ```
@@ -33,14 +34,21 @@ Subsystem classes never reference the facades, and can be used directly (see the
 
 ## Build & run
 
+With Maven:
+
 ```bash
-mkdir -p out
-javac -d out $(find src -name '*.java')
-java -cp out kz.astanait.videofacade.client.Main      # demo
-java -cp out kz.astanait.videofacade.FacadeTests      # tests
+mvn test                                                          # run the tests
+mvn compile && java -cp target/classes kz.astanait.videofacade.client.Main   # demo
 ```
 
-In IntelliJ IDEA: open the folder, mark `src/main/java` and `src/test/java` as source roots, run `Main`.
+Without Maven (demo only):
+
+```bash
+mkdir -p out && javac -d out $(find src/main -name '*.java')
+java -cp out kz.astanait.videofacade.client.Main
+```
+
+In IntelliJ IDEA: open the folder as a Maven project, run `Main`, and run the tests from the `src/test/java` folder.
 
 ## Supported formats
 
