@@ -7,5 +7,5 @@ Topic: **Option A – Media/Video Conversion Facade**. Java 17+, no external dep
 
 Converting a video needs several collaborating classes called in a strict order
 (read file → pick source codec → decode → fix audio → pick target codec → encode → write file).
-`VideoConversionFacade` hides that sequence behind one call:
+`VideoConversionFacade` hides that sequence behind one call
 
